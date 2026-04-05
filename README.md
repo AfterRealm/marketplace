@@ -38,6 +38,22 @@ claude plugin add afterrealm/father-time
 
 [Full README](https://github.com/AfterRealm/father-time) | v1.8.1
 
+---
+
+### Curb Cut
+
+WCAG 2.2 Level AA accessibility auditor. Scans HTML, JSX, Vue, and Svelte for violations — explains what's wrong, who's affected, and how to fix it.
+
+```bash
+claude plugin add afterrealm/curb-cut
+```
+
+**Modes:** Quick Scan, Full Audit, Component Check, Report
+
+**Features:** Auto-fix (prefers semantic HTML over ARIA), per-pillar scoring, CI/CD GitHub Action, WAI-ARIA component pattern checks
+
+[Full README](https://github.com/AfterRealm/curb-cut) | v1.0.0
+
 ## License
 
 MIT
