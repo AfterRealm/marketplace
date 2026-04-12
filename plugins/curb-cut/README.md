@@ -45,8 +45,8 @@ Scores break down by WCAG pillar: Perceivable, Operable, Understandable, Robust 
 ### From the AfterRealm Marketplace
 
 ```bash
-claude marketplace add AfterRealm/marketplace
-claude plugin add afterrealm/curb-cut
+claude plugin marketplace add AfterRealm/marketplace
+claude plugin install curb-cut@afterrealm
 ```
 
 ### Manual Install
