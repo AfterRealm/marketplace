@@ -1,0 +1,11 @@
+{
+  "name": "blunt-cake",
+  "version": "2.4.0",
+  "description": "Brutal but brilliant code reviewer with the personality of a celebrity chef. Real findings, real fixes, real jokes. 8 modes (standard, panel, diff, eval, skill review, batter battle, roast-a-thon, challenge) + 6 personalities + custom personality creator. Auto-fix and shareable roast cards built in.",
+  "author": {
+    "name": "Meredith",
+    "url": "https://github.com/AfterRealm"
+  },
+  "keywords": ["code-review", "linting", "security", "roast", "eval", "auditor", "quality", "personality"],
+  "license": "MIT"
+}

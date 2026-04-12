@@ -1,0 +1,11 @@
+{
+  "name": "curb-cut",
+  "version": "1.1.0",
+  "description": "Professional web accessibility auditor. Scans HTML, JSX, TSX, Vue, and Svelte for WCAG 2.2 Level AA violations, explains each finding in plain English, identifies who is affected, and provides concrete fixes. Four modes: full-audit, component-check, standards-check, compliance-report.",
+  "author": {
+    "name": "Meredith",
+    "url": "https://github.com/AfterRealm"
+  },
+  "keywords": ["accessibility", "a11y", "wcag", "auditor", "compliance", "web", "html", "react"],
+  "license": "MIT"
+}

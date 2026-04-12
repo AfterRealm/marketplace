@@ -1,0 +1,32 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "afterrealm",
+  "description": "AfterRealm plugins for Claude Code. Time-aware agents, brutal code roasters, and web accessibility auditors.",
+  "owner": {
+    "name": "Meredith",
+    "url": "https://github.com/AfterRealm"
+  },
+  "plugins": [
+    {
+      "name": "father-time",
+      "description": "Time-aware agent for Claude Code. Peak hour warnings, session tracking, daily briefings, rate limit forecasting, focus timers, and activity pattern learning.",
+      "category": "productivity",
+      "source": "./plugins/father-time",
+      "homepage": "https://github.com/AfterRealm/father-time"
+    },
+    {
+      "name": "blunt-cake",
+      "description": "Brutal but brilliant code reviewer with the personality of a celebrity chef. 8 modes, 6 personalities, auto-fix, shareable roast cards. Real findings with real jokes.",
+      "category": "development",
+      "source": "./plugins/blunt-cake",
+      "homepage": "https://github.com/AfterRealm/blunt-cake"
+    },
+    {
+      "name": "curb-cut",
+      "description": "Professional web accessibility auditor. Scans HTML, JSX, Vue, and Svelte for WCAG 2.2 Level AA violations with plain-English findings and concrete fixes.",
+      "category": "quality",
+      "source": "./plugins/curb-cut",
+      "homepage": "https://github.com/AfterRealm/curb-cut"
+    }
+  ]
+}
