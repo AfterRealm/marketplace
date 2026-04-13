@@ -10,6 +10,7 @@ description: >-
   or any follow-up like "move that one to global" when agents are being discussed.
   Do NOT trigger for: running an existing agent (/agents), debugging agent errors,
   asking about agent capabilities, or general questions about what agents are.
+version: 1.0.0
 ---
 
 # Level Up — An Agent Promotion Skill
