@@ -9,7 +9,10 @@ description: >
   "compliance report for a client". Does NOT apply when the user wants to
   write new accessible components, understand WCAG concepts abstractly, find
   accessibility libraries, or write accessibility tests.
-version: 1.1.0
+license: MIT
+metadata:
+  author: AfterRealm
+  version: "1.1.0"
 ---
 
 # Curb Cut
