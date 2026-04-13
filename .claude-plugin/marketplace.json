@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "afterrealm",
-  "description": "AfterRealm plugins for Claude Code. Time-aware agents, brutal code roasters, and web accessibility auditors.",
+  "description": "AfterRealm plugins for Claude Code. Time-aware agents, brutal code roasters, web accessibility auditors, and agent management tools.",
   "owner": {
     "name": "Meredith",
     "url": "https://github.com/AfterRealm"
@@ -27,6 +27,13 @@
       "category": "quality",
       "source": "./plugins/curb-cut",
       "homepage": "https://github.com/AfterRealm/curb-cut"
+    },
+    {
+      "name": "level-up",
+      "description": "Agent management skill for Claude Code. List, inspect, promote, adapt, and create agents across projects and global scope. Paginated menus, subagent architecture, Template & Adapt for intelligent promotion.",
+      "category": "productivity",
+      "source": "./plugins/level-up",
+      "homepage": "https://github.com/AfterRealm/level-up"
     }
   ]
 }
