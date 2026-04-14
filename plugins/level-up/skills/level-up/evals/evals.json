@@ -1,0 +1,68 @@
+{
+  "version": "1.1.0",
+  "description": "Evaluation cases for Level Up — assertion cases verify skill behavior; trigger queries verify description optimization.",
+  "assertion_cases": [
+    {
+      "name": "show_agents_shows_scan_and_menu",
+      "prompt": "show me my agents",
+      "expected_behavior": "Scan runs and returns a formatted list of agents grouped by project, followed by an AskUserQuestion with 4 options: Inspect, Promote & Adapt, Merge, Stats.",
+      "assertions": [
+        "Output contains at least one project name in bold (**PROJECT_NAME**)",
+        "Output contains agent names with model in parens (e.g., 'fasciculus (sonnet)')",
+        "AskUserQuestion is called exactly once",
+        "AskUserQuestion options list contains exactly these four labels: Inspect, Promote & Adapt, Merge, Stats",
+        "No second AskUserQuestion call fires before user selects an option"
+      ]
+    },
+    {
+      "name": "stats_route_produces_report_with_budget_and_caveats",
+      "prompt": "agent stats",
+      "expected_behavior": "Skill routes to Stats action (with or without the menu). Stats subagent runs agent_stats.py --action summary --since 7d and --action unused. Output includes work tokens, total tokens, turn counts, weekly budget utilization (if available), and bulleted caveats.",
+      "assertions": [
+        "Output contains 'invocations' count",
+        "Output contains 'work tokens' and 'total tokens' distinction",
+        "Output contains a per-agent table or list with turns column",
+        "If weekly_usage is available, output mentions 'weekly' with a percentage",
+        "Caveats appear as bullet points, not a single prose paragraph",
+        "If unmatched_invocations > 0, the count is surfaced"
+      ]
+    },
+    {
+      "name": "inspect_named_agent_resolves_without_pickers",
+      "prompt": "inspect my fasciculus agent",
+      "expected_behavior": "Skill resolves 'fasciculus' to a specific agent. If unique, no picker fires. If ambiguous across projects, one plain-text chat question disambiguates (not a second AskUserQuestion). Subagent runs the scanner with both --name and --project.",
+      "assertions": [
+        "Only zero or one AskUserQuestion call fires (the action menu, if shown at all)",
+        "If multiple fasciculus agents exist, the main thread asks the user via plain chat — not AskUserQuestion — to pick the project",
+        "The inspect subagent prompt includes both --name and --project flags",
+        "Output contains the full agent markdown body"
+      ]
+    }
+  ],
+  "trigger_queries": {
+    "notes": "Run each query 3 times. Passing threshold: trigger rate > 0.5 for should-trigger, < 0.5 for should-not-trigger.",
+    "queries": [
+      {"query": "list my agents", "should_trigger": true},
+      {"query": "what agents do I have", "should_trigger": true},
+      {"query": "show me agent usage stats", "should_trigger": true},
+      {"query": "which agents are unused", "should_trigger": true},
+      {"query": "promote my office-manager to global", "should_trigger": true},
+      {"query": "merge my two fasciculus agents", "should_trigger": true},
+      {"query": "level up", "should_trigger": true},
+      {"query": "inspect the neurologist", "should_trigger": true},
+      {"query": "most used agents this week", "should_trigger": true},
+      {"query": "move that one to global", "should_trigger": true},
+
+      {"query": "create a new agent for code review", "should_trigger": false},
+      {"query": "run my fasciculus agent", "should_trigger": false},
+      {"query": "why is my agent failing", "should_trigger": false},
+      {"query": "what are Claude Code agents", "should_trigger": false},
+      {"query": "show me the last commit", "should_trigger": false},
+      {"query": "promote this PR to main", "should_trigger": false},
+      {"query": "merge my branches", "should_trigger": false},
+      {"query": "show usage stats for my API calls", "should_trigger": false},
+      {"query": "inspect the database schema", "should_trigger": false},
+      {"query": "list my skills", "should_trigger": false}
+    ]
+  }
+}

@@ -1,60 +1,52 @@
 ---
 name: level-up
 description: >-
-  Use this skill when the user wants to manage, inspect, create, promote, or organize their Claude Code agents.
-  IMPORTANT: You cannot discover what agents exist across projects without this skill — it contains
-  scanner scripts that search all .claude/agents/ directories across every project and global scope.
-  Triggers: "list my agents", "show agents", "create an agent", "promote agent to global",
-  "copy agent", "what agents do I have", "agent manager", "level up", "manage agents",
-  "move agent to global", "make this agent available everywhere", "which agents are where",
-  or any follow-up like "move that one to global" when agents are being discussed.
-  Do NOT trigger for: running an existing agent (/agents), debugging agent errors,
-  asking about agent capabilities, or general questions about what agents are.
+  Use this skill when the user wants to manage, inspect, promote, merge, or analyze usage of their Claude Code
+  agents. IMPORTANT: Contains scanner scripts that search all .claude/agents/ directories and session history.
+  Triggers: "list agents", "show agents", "promote to global", "agent manager", "level up", "manage agents",
+  "inspect agent", "merge agents", "combine agents", "agent stats", "agent usage", "which agents are unused",
+  "most used agents", or follow-ups like "move that one to global" when agents are discussed.
+  Do NOT trigger for: running agents (/agents), debugging agent errors, or general questions.
+  Note: Claude handles agent CREATION natively — no skill needed. If user says "create an agent",
+  respond directly without invoking this skill.
 license: MIT
-compatibility: Requires Python 3.x for the scanner script
+compatibility: Requires Python 3.x for scanner scripts
 metadata:
   author: AfterRealm
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
-# Level Up — An Agent Promotion Skill
+# Level Up — Agent Management Skill
 
-Manage, inspect, create, and promote your Claude Code agents across projects and global scope.
+Inspect, promote, merge, and analyze usage of your Claude Code agents across projects and global scope.
 
-## Architecture
+## Glossary
 
-This skill uses a **split approach** to save context:
+- **"Ask as chat"** = output a text question in your reply. **Do NOT use AskUserQuestion** — that burns context on every picker. Plain chat messages keep follow-ups lightweight.
+- **Subagent** = heavy work handler, spawned via the Agent tool. Keeps big payloads out of main context.
+- **Resolved path** = absolute path to a script, computed from `SKILL_DIR`. Pass these to subagents — they can't resolve `SKILL_DIR` themselves.
 
-- **Heavy work** (scanning, inspecting, adapting) runs in a **subagent** so the large JSON payloads and file contents stay out of the main session context
-- **User interaction** (menus, approval) stays in the **main thread** since AskUserQuestion only works there
-- The subagent returns a compact summary; the main thread presents it and handles navigation
+## Scripts
 
-## Path Resolution
-
-Before any action, resolve the scanner script path once. The script lives at:
-`SKILL_DIR/scripts/scan_agents.py`
-
-Where `SKILL_DIR` is this skill's base directory. Store the resolved absolute path and pass it into ALL subagent prompts as a concrete path — subagents cannot resolve `SKILL_DIR` themselves.
-
-Example: if the skill is at `C:\Users\me\.claude\skills\level-up`, the scanner is `C:\Users\me\.claude\skills\level-up\scripts\scan_agents.py`. Use that full path in every subagent prompt.
+Resolve these paths once before any action:
+- Scanner: `SKILL_DIR/scripts/scan_agents.py`
+- Stats: `SKILL_DIR/scripts/agent_stats.py`
 
 ## Flow
 
 ### Step 1: Scan (subagent)
 
-Resolve the scanner path, then spawn an Agent:
+Always start here. Spawn a subagent to scan all agents:
 
 ```
-Agent(description: "Scan agents", prompt: "Run: python \"<RESOLVED_SCANNER_PATH>\" --action list
-Parse the JSON. Return ONLY a compact summary in this format:
+Agent(description: "Scan agents", prompt: "Run: python \"<SCANNER_PATH>\" --action list
+Parse the JSON. Return ONLY a compact summary:
 GLOBAL: agent1, agent2
-PROJECT_NAME (count): agent1, agent2, agent3
-...one line per project, agents comma-separated. Include model in parens if set. Nothing else.")
+PROJECT_NAME (count): agent1 (model), agent2 (model)
+One line per project, agents comma-separated. Nothing else.")
 ```
 
-If the scan returns zero agents, skip the action menu entirely and offer: "No agents found anywhere. Want to create your first one?" Then go directly to the Create flow.
-
-Present the summary to the user in this format:
+Present the results directly in the chat:
 
 ```
 **GLOBAL** — agent1, agent2
@@ -62,107 +54,124 @@ Present the summary to the user in this format:
 **Vox Memori** (4) — Architect (opus), Neurologist (opus), ...
 ```
 
-Bold project names, agent count in parens, comma-separated agents with model.
+If zero agents found, tell the user and stop.
 
-### Step 2: Action Menu
+### Step 2: Action Menu (the ONLY AskUserQuestion in the whole skill)
 
-AskUserQuestion with 4 options:
+Immediately after presenting the scan results, show ONE AskUserQuestion with exactly 4 options:
 
 1. **Inspect** — View the full source of an agent
 2. **Promote & Adapt** — Copy or adapt an agent to a different scope
-3. **Create** — Build a new agent from scratch
+3. **Merge** — Combine two agents into one
+4. **Stats** — Agent usage analytics from session data
 
-### Agent Picker (used by ALL actions except Create)
+The user picks one. No more pickers after this — everything else is chat or subagent.
 
-Always use the two-step picker — project first, then agent. This prevents ambiguity with duplicate names (e.g., "Architect" exists in 3 projects).
+### Step 3: Execute the action
 
-**Step A — Pick the project.** Show up to 3 projects per page. If more than 3, the 4th option is "More projects..." for the next page.
+#### If Inspect
 
-**Step B — Pick the agent.** List that project's agents. Show up to 3 per page with descriptions. If more than 3, the 4th option is "More agents..." to paginate.
+**Ask as chat:** "Which agent? (name and project if ambiguous)"
 
-Never skip Step A, even for Inspect. Duplicate agent names across projects are common.
+User replies. Resolve the agent — if the name is unique across all projects, use it directly. If ambiguous, ask once as chat to clarify.
 
-### If Inspect (subagent)
-
-After agent picker, spawn a subagent with the resolved scanner path:
-
+Then spawn a subagent:
 ```
-Agent(description: "Inspect agent", prompt: "Run: python \"<RESOLVED_SCANNER_PATH>\" --action inspect --name \"AGENT_NAME\"
-Show the full agent markdown content. Format it readably.")
+Agent(description: "Inspect agent", prompt: "Run: python \"<SCANNER_PATH>\" --action inspect --name \"NAME\" --project \"PROJECT\"
+Show the full agent markdown content. Format readably.")
 ```
 
-### If Promote & Adapt
+#### If Promote & Adapt
 
-After agent picker, AskUserQuestion:
+**Ask as chat:** "Which agent do you want to promote? (name and project)"
 
-1. **Direct copy** — Promote as-is
-2. **Template & adapt** — Rewrite for the new scope
+User replies. Resolve the agent. **Ask as chat:** "Direct copy to global, or adapt it first to remove project-specific references?"
 
-**Direct copy** — spawn subagent:
+**Direct copy** → subagent runs `--action promote --name NAME --project PROJECT`.
+
+**Adapt** → subagent inspects the agent, rewrites to remove project-specific references (hardcoded paths, project names, data references), and returns the adapted content. Show the result. **Ask as chat:** "Save this, or edit first?" Write to `~/.claude/agents/NAME.md` when approved.
+
+#### If Merge
+
+**Ask as chat:** "Which two agents do you want to merge? (name + project for each)"
+
+Spawn a subagent to do the full merge:
 ```
-Agent(description: "Promote agent", prompt: "Run: python \"<RESOLVED_SCANNER_PATH>\" --action promote --name \"AGENT_NAME\" --project \"PROJECT\"
-Report the result.")
+Agent(description: "Merge agents", prompt: "Run: python \"<SCANNER_PATH>\" --action merge-prep --name \"NAME1\" --project \"P1\" --name2 \"NAME2\" --project2 \"P2\"
+Parse the JSON. Build a complete merged agent:
+- Frontmatter: use the more capable model, union of tools, combine descriptions
+- Include ALL sections from both agents
+- Common sections: concatenate both under the same heading with clear attribution
+- Unique sections: include as-is
+Return the complete merged agent markdown, ready to save.")
 ```
 
-**Template & adapt** — spawn subagent:
+Show the merged result. **Ask as chat:** "Save this? What name and scope (global or a specific project)?" Write the file when approved, verify with scanner.
+
+If the user wants section-by-section control instead of the smart merge, read `SKILL_DIR/references/flows.md` for the granular merge flow.
+
+#### If Stats
+
+Spawn a subagent immediately — no user input needed:
 ```
-Agent(description: "Adapt agent", prompt: "Run: python \"<RESOLVED_SCANNER_PATH>\" --action inspect --name \"AGENT_NAME\"
-Read the full agent source. Identify project-specific references (hardcoded paths, project names, project-specific tools, data references). Rewrite the agent to be generic — replace specific paths with general instructions, broaden scope, keep core role and personality. If the agent has no project-specific references, state that clearly before returning the content unchanged. Return ONLY the adapted markdown content (or the no-changes notice + original content), nothing else.")
+Agent(description: "Agent usage stats", prompt: "Run: python \"<STATS_PATH>\" --action summary --since 7d
+Also run: python \"<STATS_PATH>\" --action unused --since all
+Parse both JSON outputs. Format a readable report:
+- Total invocations and sessions scanned
+- Weekly budget utilization if weekly_usage field is present
+- Table: agent type, invocations, avg turns, avg work tokens, avg total tokens, projects
+- List of unused agents (exist on disk, never invoked)
+- Bullet the caveats from the 'caveats' array
+- Note unmatched_invocations count if > 0
+Keep it compact.")
 ```
 
-Show the adapted version to the user. AskUserQuestion: Save it / Edit first. If approved, write to `~/.claude/agents/AGENT_NAME.md`.
+Present the results. Then **ask as chat:**
 
-### If Create
+> "Want optimization suggestions for any of these agents? I can audit an agent's definition against its usage patterns and suggest ways to reduce turns, cache growth, or redundant work. Note: each audit spawns a subagent (~10-15k work tokens, may add ~1-2% to weekly usage)."
 
-Walk the user through building a new agent (main thread — needs user input at each step):
+If the user says yes and names one or more agents, spawn a single audit subagent per agent (or batch if they list multiple):
 
-1. Ask what the agent should do (role, personality, tools, restrictions)
-2. AskUserQuestion for scope: Global / pick a project (use project picker if needed)
-3. Ask for a name
-4. Write the `.md` file using the agent template below
-5. Save to the appropriate `.claude/agents/` directory
-6. Run the scanner to verify it appears
+```
+Agent(description: "Agent optimization audit", prompt: "For each of these agents, run: python \"<SCANNER_PATH>\" --action inspect --name \"AGENT_NAME\" --project \"PROJECT\"
+Read the full agent definition. Then consider its usage stats:
+- Invocations: N
+- Avg turns per invocation: T
+- Avg work tokens: W
+- Avg total tokens: TT
+- Projects used in: [list]
 
-**Agent template:**
-```markdown
----
-name: agent-name
-description: One-line description of what this agent does
-model: sonnet
-tools:
-  - Read
-  - Glob
-  - Grep
-  - Bash
----
+Audit each agent for optimization opportunities:
+1. High turn count → look for redundant tool calls, sequential reads that could be parallel, missing scope constraints
+2. High cache/total ratio → reduce per-turn re-reading with targeted reads and 'stop after X' instructions
+3. Vague instructions → add specificity so the agent doesn't explore
+4. Missing structure → add a checklist or output template to constrain scope
+5. Unused sections or bloat in the definition itself
 
-# Agent Name
+Return: for each agent, a concrete list of 3-5 optimization suggestions with BEFORE/AFTER edits to the .md file. Do NOT modify files — suggest only.")
+```
 
-You are [role description]. When invoked, you [what the agent does].
+Present the suggestions. **Ask as chat:** "Want me to apply any of these? Audit another agent? Or done?" If the user wants to audit more, inform them of the current weekly utilization before proceeding. If they want fixes applied, edit the agent file directly.
 
-## What You Do
-
-[Specific instructions for the agent's behavior]
+For extended Stats flows (drill-down into a specific agent via `--action detail`, changing the time period via `--since 30d/all`, or the versioning commands `scan_agents.py` still supports), read `SKILL_DIR/references/flows.md`.
 
 ## Rules
 
-- [Key constraints and guidelines]
-```
+These are non-negotiable:
 
-**Example agents for reference** — show these to the user if they're unsure:
+1. **One AskUserQuestion per invocation.** The action menu. That's it. Every other interaction is chat.
+2. **Heavy work goes to subagents.** Scanning, inspecting, merging, stats, audits — never do these in the main thread.
+3. **Pass resolved absolute paths.** Subagents cannot resolve `SKILL_DIR`. Store the two script paths once, pass them into every subagent prompt.
+4. **Never delete an agent without explicit user confirmation.**
+5. **Check for name collisions before promoting.** The scanner already does this — don't skip the check.
+6. **Surface the weekly budget when relevant.** Especially before spawning multiple audit subagents. Users should see the cost at the decision point.
 
-- **Simple reviewer:** Reads code files, checks for issues, reports findings
-- **Subagent worker:** Runs scripts, processes output, returns compact results
-- **Project specialist:** Deep knowledge of one project, handles project-specific tasks
+## Scopes
 
-## Important Notes
-
-- Global agents: `~/.claude/agents/` — available in every project
-- Project agents: `<project>/.claude/agents/` — only work in that project
+- **Global agents:** `~/.claude/agents/` — available in every project
+- **Project agents:** `<project>/.claude/agents/` — only work in that project
 - Agent files are `.md` with YAML frontmatter
-- Never delete an agent without explicit user confirmation
-- Always check for name collisions before promoting
-- Always use the project picker before the agent picker — never skip project selection
-- AskUserQuestion max 4 options — paginate with "More..." as 4th when needed
-- Heavy operations go to subagents to preserve main session context
-- Pass resolved absolute paths to subagents, never SKILL_DIR placeholders
+
+## Version Notes
+
+See `CHANGELOG.md` in the skill root for release history.
