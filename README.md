@@ -74,7 +74,7 @@ claude plugin add afterrealm/level-up
 
 ### Claude Voice
 
-Multilingual-first voice input for the **Claude Desktop App** (not the Code CLI). Hold a hotkey, speak any of 99 Whisper languages, transcript pastes into the chat. Lightweight plugin — no MCP, no TTS. Fills the gap while official voice mode is English-only.
+Multilingual-first voice input for anywhere you type into Claude — **Desktop App, Claude Code Desktop, or regular Claude Code terminals**. Hold a hotkey, speak any of 99 Whisper languages, transcript pastes into whatever Claude window has focus. Lightweight plugin — no MCP, no TTS. Fills the gap while official voice mode is English-only.
 
 ```bash
 claude plugin add afterrealm/claude-voice

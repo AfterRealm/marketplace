@@ -37,7 +37,7 @@
     },
     {
       "name": "claude-voice",
-      "description": "Multilingual voice input for the Claude Desktop App (not the Code CLI). Hold a hotkey, speak any of 99 Whisper languages, transcript pastes into the focused chat. Fills the gap while official voice mode is English-only. Lightweight plugin — no MCP, no TTS. (Windows-tested; macOS/Linux feedback welcome.)",
+      "description": "Multilingual voice input for anywhere you type into Claude — Desktop App, Code Desktop, or regular Code terminal. Hold a hotkey, speak any of 99 Whisper languages, transcript pastes into whatever Claude window has focus. Fills the gap while official voice mode is English-only. Lightweight plugin — no MCP, no TTS. (Windows-tested; macOS/Linux feedback welcome.)",
       "category": "utility",
       "source": "./plugins/claude-voice",
       "homepage": "https://github.com/AfterRealm/claude-voice"
