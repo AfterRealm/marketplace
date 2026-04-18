@@ -2,11 +2,13 @@
 
 **Talk to Claude in your own language.**
 
+*A lightweight, multilingual-first voice-input plugin for the **Claude Desktop App** (not the Code CLI). If official `/voice` gives you gibberish in your language, this is for you.*
+
 Claude's built-in voice mode only understands English. If you speak French, Spanish, German, Japanese, Arabic, Portuguese — anything else — your words come out as English-phonetic nonsense and Claude doesn't understand you.
 
 This plugin fixes that. You press a key, you speak your language, and what you said gets typed into Claude's chat box exactly right. Claude reads it, understands it, and replies normally. No subscription to anything new, no API keys, nothing sent to the cloud.
 
-Works with the **Claude Desktop App** and **Claude Code Desktop**.
+Works with the **Claude Desktop App** and **Claude Code Desktop**. No MCP server, no TTS pipeline, no long config — just a Claude plugin + a Python script.
 
 > ⚠️ **Platform status:** Fully tested on **Windows**. macOS and Linux code paths are implemented but untested in the wild — if you install on Mac or Linux, please [open an issue](https://github.com/AfterRealm/claude-voice/issues) (good or bad) so we can confirm or fix. See [Testers welcome](#testers-welcome) at the bottom for what would help most.
 
@@ -257,6 +259,19 @@ Flags: `--language <code>` / `--model <size>` / `--hotkey "<combo>"` / `--max-se
 ## License
 
 MIT — see [LICENSE](LICENSE). Free to use, modify, redistribute.
+
+## Related projects
+
+claude-voice isn't the only Claude voice plugin out there. Different tools solve different slices of the problem — if this one isn't the right fit, try:
+
+- **[VoiceMode (mbailey/voicemode)](https://github.com/mbailey/voicemode)** — full two-way voice conversations (STT + TTS) for **Claude Code**, MCP-based. The featured option if you want to hear replies spoken back and work from the terminal.
+- **[claude-stt (jarrodwatts/claude-stt)](https://github.com/jarrodwatts/claude-stt)** — live streaming dictation for **Claude Code**. Transcription as you speak, not push-to-talk.
+- **[voice-to-claude (enesbasbug/voice-to-claude)](https://github.com/enesbasbug/voice-to-claude)** — push-to-talk for **Claude Code** using whisper.cpp with Metal GPU acceleration. Mac-focused.
+- **[claude-ptt (aaddrick/claude-ptt)](https://github.com/aaddrick/claude-ptt)** — push-to-talk for **Claude Code**, local or OpenAI API backend.
+- **[Wispr Flow](https://wisprflow.ai/use-cases/claude)** — commercial cross-app dictation SaaS.
+
+**Where claude-voice fits in that lineup:**
+multilingual-first positioning, **Desktop App** (not Code CLI), plain Claude plugin format (no MCP), lightweight install (just a venv). If you want TTS or 2-way terminal voice, VoiceMode is the better call. If you want a simple multilingual voice input that drops into the Claude Desktop App chat, stay here.
 
 ## Credits
 
