@@ -70,6 +70,24 @@ claude plugin add afterrealm/level-up
 
 [Full README](https://github.com/AfterRealm/level-up) | v1.1.0
 
+---
+
+### Claude Voice
+
+Hold-to-talk voice input for the Claude Desktop App in any of 99 languages. Local Whisper STT — no API key, no cloud. Fills the gap while official voice mode is English-only.
+
+```bash
+claude plugin add afterrealm/claude-voice
+```
+
+**Flow:** `/voice` → pick language + Whisper model + hotkey → hold F8 → speak → release → transcript pastes into Claude.
+
+**Features:** Local `faster-whisper` STT (99 languages), focus safety (only pastes into Claude windows), plugin-local venv install, configurable hotkey + recording cap, first-run macOS/Linux platform warnings.
+
+**Status:** Windows-tested end-to-end. macOS/Linux code paths implemented; [feedback welcome](https://github.com/AfterRealm/claude-voice/issues).
+
+[Full README](https://github.com/AfterRealm/claude-voice) | v0.1.0
+
 ## License
 
 MIT

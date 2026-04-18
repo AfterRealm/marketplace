@@ -1,0 +1,47 @@
+# claude-voice configuration
+# Copy to `config.yaml` in the plugin root and customize. All fields optional.
+
+# Hotkey to hold-to-talk. pynput chord notation — every key in angle brackets.
+# Default is F8: single key, rarely conflicts. Chord combos are fine too, but
+# Ctrl+Shift+Space in particular can clash with IMEs and Discord push-to-talk.
+# Examples:
+#   "<f8>"                          (recommended)
+#   "<f9>"
+#   "<ctrl>+<shift>+<space>"
+#   "<ctrl>+<alt>+<v>"
+hotkey: "<f8>"
+
+# Language code for transcription. null = auto-detect.
+# ISO codes: "en" english, "fr" french, "es" spanish, "de" german, "ja" japanese, "zh" chinese, ...
+language: null
+
+# Whisper model size. Bigger = more accurate, slower, more RAM.
+#   tiny      ~ 75 MB,  fastest,   rough
+#   base      ~150 MB,  fast,      OK (English-leaning)
+#   small     ~500 MB,  balanced,  good (recommended)
+#   medium    ~1.5 GB,  slow,      great
+#   large-v3  ~3 GB,    slowest,   best (needs GPU to be usable)
+whisper_model: "small"
+
+# Inference backend. Use "cuda" + "float16" if you have an NVIDIA GPU.
+whisper_device: "cpu"
+whisper_compute: "int8"
+
+# Audio
+samplerate: 16000
+
+# Hard cap on a single hold-to-talk clip, in seconds. Protects against runaway
+# memory + silent Whisper stalls when the hotkey gets stuck or you walk away
+# mid-hold. Uncapped audio at 16 kHz float32 is roughly 3.8 MB per minute.
+# Raise for dictation (e.g. 300 = 5 min), lower for twitchy voice commands.
+max_record_seconds: 60
+
+# Press Enter after pasting the transcript (auto-send the message).
+auto_send: true
+
+# Focus safety — only paste if the focused window title contains this substring
+# (case-insensitive). Set to "" to disable and paste into any focused window.
+target_window: "claude"
+
+# Log the transcribed text to the voice-mode terminal for review.
+print_transcript: true

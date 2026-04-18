@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# User's private config (keep example only)
+config.yaml
+
+# Plugin runtime data dir (created by Claude)
+data/
+
+# Whisper model cache
+models/
+*.bin
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Audio scratch
+*.wav

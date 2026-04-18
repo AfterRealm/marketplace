@@ -1,0 +1,11 @@
+{
+  "name": "claude-voice",
+  "version": "0.1.0",
+  "description": "Hold-to-talk voice input for the Claude Desktop App and Claude Code Desktop. Speak in any of 99 Whisper-supported languages; the transcript pastes straight into the focused chat. Fills the gap while official voice mode is English-only. (Windows-tested; macOS/Linux feedback welcome.)",
+  "author": {
+    "name": "Meredith",
+    "url": "https://github.com/AfterRealm"
+  },
+  "keywords": ["voice", "speech", "whisper", "stt", "multilingual", "desktop-app", "accessibility"],
+  "license": "MIT"
+}

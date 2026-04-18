@@ -1,0 +1,19 @@
+{
+  "name": "afterrealm-plugins",
+  "metadata": {
+    "description": "AfterRealm Claude plugins — voice, productivity, creative tooling"
+  },
+  "owner": {
+    "name": "Meredith",
+    "url": "https://github.com/AfterRealm"
+  },
+  "plugins": [
+    {
+      "name": "claude-voice",
+      "description": "Hold-to-talk voice input for the Claude Desktop App — multilingual local STT (99 languages via Whisper), transcript pastes into the focused chat. Fills the gap while official voice mode is English-only. Windows-tested; macOS/Linux feedback welcome.",
+      "category": "utility",
+      "source": "./",
+      "homepage": "https://github.com/AfterRealm/claude-voice"
+    }
+  ]
+}
