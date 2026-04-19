@@ -16,7 +16,7 @@ typed into Claude (same as typing).
 
 from __future__ import annotations
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 import argparse
 import os
@@ -36,10 +36,11 @@ except ImportError:
     yaml = None
 
 try:
+    import numpy as np
     import sounddevice as sd
     import soundfile as sf
 except ImportError:
-    print("Missing audio deps. Run: pip install sounddevice soundfile", file=sys.stderr)
+    print("Missing audio deps. Run: pip install numpy sounddevice soundfile", file=sys.stderr)
     sys.exit(1)
 
 try:
@@ -80,14 +81,28 @@ class Config:
     target_window: str = "claude"       # only type if focused window title contains this (case-insensitive). "" to disable.
     print_transcript: bool = True
     max_record_seconds: int = 60        # hard cap on a single hold-to-talk clip — protects against runaway memory
+    # ── Mic sensitivity (for quiet / whispered speech) ──
+    mic_gain: float = 1.0               # manual pre-amp multiplier applied before normalization (1.0 = off)
+    auto_normalize: bool = True         # peak-normalize quiet audio toward normalize_target_peak
+    normalize_target_peak: float = 0.8  # target peak (0.0-1.0) after normalization; only boosts, never attenuates
+    whisper_mode: bool = False          # preset bundle for whispered/quiet speech — tweaks gain + VAD + Whisper params
 
     @classmethod
     def load(cls, path: Path | None) -> "Config":
         if path is None or not path.exists() or yaml is None:
             return cls()
-        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        try:
+            raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+        except Exception as e:
+            print(f"[claude-voice] config.yaml failed to parse ({e}); using defaults.", file=sys.stderr)
+            return cls()
+        if raw is None:
+            raw = {}
+        if not isinstance(raw, dict):
+            print(f"[claude-voice] config.yaml must be a mapping at the top level, got {type(raw).__name__}; using defaults.", file=sys.stderr)
+            return cls()
         cfg = cls()
-        for key, val in data.items():
+        for key, val in raw.items():
             if hasattr(cfg, key):
                 setattr(cfg, key, val)
             else:
@@ -95,12 +110,33 @@ class Config:
         return cfg
 
 
+# Preset bumper — called ONCE from main() after all config + CLI overrides are merged.
+# Single source of truth so CLI users and config-file users get identical whisper_mode values.
+def _apply_whisper_preset(cfg: "Config") -> None:
+    if not cfg.whisper_mode:
+        return
+    if cfg.mic_gain <= 1.0:
+        cfg.mic_gain = 4.0
+    if cfg.normalize_target_peak < 0.95:
+        cfg.normalize_target_peak = 0.95
+
+
 # ─── AUDIO CAPTURE ─────────────────────────────────────────
 
 class Recorder:
-    def __init__(self, samplerate: int, max_seconds: int = 60):
+    def __init__(
+        self,
+        samplerate: int,
+        max_seconds: int = 60,
+        mic_gain: float = 1.0,
+        auto_normalize: bool = True,
+        normalize_target_peak: float = 0.8,
+    ):
         self.samplerate = samplerate
         self.max_seconds = max_seconds
+        self.mic_gain = mic_gain
+        self.auto_normalize = auto_normalize
+        self.normalize_target_peak = normalize_target_peak
         self.frames: list = []
         self.recording = False
         self._stream = None
@@ -131,7 +167,6 @@ class Recorder:
             self._stream = None
         if not self.frames:
             return None
-        import numpy as np
         data = np.concatenate(self.frames, axis=0)
         if len(data) < self.samplerate * 0.2:
             return None
@@ -140,6 +175,26 @@ class Recorder:
             print(f"[claude-voice] recording capped at {self.max_seconds}s "
                   f"(adjust via config `max_record_seconds`).", flush=True)
             data = data[:max_samples]
+
+        # ── Sensitivity boost for quiet / whispered speech ──
+        touched = False
+        # 1) Manual pre-amp (user-set or whisper_mode preset)
+        if self.mic_gain != 1.0:
+            data = data * self.mic_gain
+            touched = True
+        # 2) Auto peak-normalize — boost quiet audio AND attenuate any peak that gain
+        #    pushed past 1.0 (otherwise the clip in step 3 would introduce distortion).
+        if self.auto_normalize:
+            peak = float(np.max(np.abs(data)))
+            if peak > 1e-6:  # ignore pure silence / division-by-zero
+                scale = self.normalize_target_peak / peak
+                if scale > 1.0 or peak > 1.0:
+                    data = data * scale
+                    touched = True
+        # 3) Safety clip — only needed if we actually touched the signal
+        if touched:
+            data = np.clip(data, -1.0, 1.0)
+
         tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
         sf.write(tmp.name, data, self.samplerate)
         tmp.close()
@@ -172,11 +227,30 @@ class Transcriber:
         print("[claude-voice] Whisper ready.", flush=True)
 
     def transcribe(self, wav_path: str) -> str:
-        segments, info = self.model.transcribe(
-            wav_path,
-            language=self.cfg.language,
-            vad_filter=True,
-        )
+        kwargs: dict = {
+            "language": self.cfg.language,
+            "vad_filter": True,
+        }
+        if self.cfg.whisper_mode:
+            # Quiet / whispered speech tuning:
+            # - Keep VAD enabled but loosen its threshold. Pure-off VAD lets Whisper
+            #   hallucinate "Thanks for watching!" etc. on accidental hotkey bumps.
+            #   threshold=0.15 is loose enough to pass whispered audio while still
+            #   filtering true silence.
+            # - Lower no_speech threshold so Whisper doesn't dismiss quiet frames.
+            # - Disable previous-text conditioning (stops hallucinated fill-in).
+            # - Prime the model with an initial prompt hinting at quiet input.
+            kwargs["vad_parameters"] = {"threshold": 0.15}
+            kwargs["no_speech_threshold"] = 0.2
+            kwargs["condition_on_previous_text"] = False
+            # Only prime with an English hint when the user is transcribing English
+            # (or auto-detecting, which is already English-biased on short clips).
+            # Priming an explicitly non-English session with English text would nudge
+            # the model toward English tokens — exactly what this multilingual plugin
+            # is built to avoid.
+            if self.cfg.language in (None, "", "en"):
+                kwargs["initial_prompt"] = "The following contains quiet or whispered speech."
+        segments, _ = self.model.transcribe(wav_path, **kwargs)
         return "".join(seg.text for seg in segments).strip()
 
 
@@ -306,11 +380,22 @@ def _print_platform_warnings() -> None:
 
 def run(cfg: Config) -> None:
     _print_platform_warnings()
-    recorder = Recorder(cfg.samplerate, max_seconds=cfg.max_record_seconds)
+    recorder = Recorder(
+        cfg.samplerate,
+        max_seconds=cfg.max_record_seconds,
+        mic_gain=cfg.mic_gain,
+        auto_normalize=cfg.auto_normalize,
+        normalize_target_peak=cfg.normalize_target_peak,
+    )
     transcriber = Transcriber(cfg)
 
     print(f"[claude-voice] hold '{cfg.hotkey}' to talk. Release to send into focused window.", flush=True)
     print(f"[claude-voice] language = {cfg.language or 'auto-detect'} · max clip = {cfg.max_record_seconds}s", flush=True)
+    if cfg.whisper_mode:
+        print(f"[claude-voice] whisper_mode ON — mic_gain={cfg.mic_gain:.1f}x, "
+              f"target peak={cfg.normalize_target_peak:.2f}, relaxed VAD + transcription thresholds.", flush=True)
+    elif cfg.mic_gain != 1.0 or not cfg.auto_normalize:
+        print(f"[claude-voice] mic_gain={cfg.mic_gain:.1f}x · auto_normalize={cfg.auto_normalize}", flush=True)
     if cfg.target_window:
         if focus_detection_supported():
             print(f"[claude-voice] focus safety ON — only typing into windows containing: '{cfg.target_window}'", flush=True)
@@ -401,6 +486,10 @@ def run(cfg: Config) -> None:
                 # Focus safety
                 if cfg.target_window:
                     title = active_window_title()
+                    if not title:
+                        hint = " (focus detection returned empty — on Linux install xdotool or wmctrl; use --any-window to bypass)"
+                        print(f"[claude-voice] focus is ''{hint} — not typing.", flush=True)
+                        continue
                     if cfg.target_window.lower() not in title.lower():
                         print(f"[claude-voice] focus is '{title}' — not typing (no match for '{cfg.target_window}'). Switch focus to the Claude window first.", flush=True)
                         continue
@@ -426,6 +515,17 @@ def run(cfg: Config) -> None:
 
 # ─── CLI ENTRY ─────────────────────────────────────────────
 
+def _gain_arg(s: str) -> float:
+    """argparse validator: mic_gain must be a sensible multiplier."""
+    try:
+        v = float(s)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"mic-gain must be a number, got '{s}'")
+    if not 0.1 <= v <= 20.0:
+        raise argparse.ArgumentTypeError(f"mic-gain must be between 0.1 and 20.0, got {v}")
+    return v
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Voice input for the Claude Desktop App in any language.")
     parser.add_argument("--version", action="version", version=f"claude-voice {__version__}")
@@ -438,6 +538,10 @@ def main() -> int:
     parser.add_argument("--max-seconds", type=int, help="Hard cap on a single hold-to-talk clip (default 60).")
     parser.add_argument("--no-send", action="store_true", help="Type transcript but don't press Enter.")
     parser.add_argument("--any-window", action="store_true", help="Disable focus safety; type into any focused window.")
+    parser.add_argument("--whisper-mode", action="store_true",
+        help="Preset bundle for quiet/whispered speech: boosts mic gain, relaxes VAD + Whisper thresholds.")
+    parser.add_argument("--mic-gain", type=_gain_arg,
+        help="Manual pre-amp multiplier for quiet mics (0.1-20.0, e.g. 2.5). Applied before auto-normalization.")
     args = parser.parse_args()
 
     cfg = Config.load(args.config if args.config.exists() else None)
@@ -447,6 +551,14 @@ def main() -> int:
     if args.max_seconds: cfg.max_record_seconds = args.max_seconds
     if args.no_send: cfg.auto_send = False
     if args.any_window: cfg.target_window = ""
+    if args.whisper_mode: cfg.whisper_mode = True
+    if args.mic_gain is not None: cfg.mic_gain = args.mic_gain
+
+    # Clamp config-loaded mic_gain too (YAML bypasses argparse validation)
+    cfg.mic_gain = max(0.1, min(20.0, cfg.mic_gain))
+
+    # Single source of truth for the whisper_mode preset — runs after all overrides.
+    _apply_whisper_preset(cfg)
 
     run(cfg)
     return 0

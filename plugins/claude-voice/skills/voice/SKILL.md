@@ -14,9 +14,9 @@ description: >
 # Voice mode launcher
 
 This skill gets the user from zero to a running voice-input loop in one go.
-It asks the user three quick setup questions (language, model size, hotkey),
-installs Python deps on first run, and launches the script as a detached
-background process.
+It asks the user four quick setup questions (language, model size, hotkey,
+voice sensitivity), installs Python deps on first run, and launches the
+script as a detached background process.
 
 ## Step 1 — Prerequisites
 
@@ -70,8 +70,8 @@ If install itself fails, surface the error and stop.
 
 ## Step 3 — Ask the user for language, model, and hotkey
 
-Use **AskUserQuestion** with these THREE questions (send all three in one call
-for a single round-trip):
+Use **AskUserQuestion** with these FOUR questions (send all four in one call
+for a single round-trip — four is the AskUserQuestion tool maximum):
 
 **Question 1 — "What language will you be speaking?"**
 
@@ -107,7 +107,18 @@ Do NOT offer Right Alt as an option on Windows. Many keyboard layouts remap
 Right Alt to AltGr, which Windows emits as a synthetic Ctrl+Alt combo —
 pynput sees two keys and the hotkey never resolves.
 
-Defaults if the user skips: `small` model, auto-detect language, `<f8>` hotkey.
+**Question 4 — "How do you usually speak when recording?"**
+
+This picks between the default transcription pipeline and the `whisper_mode`
+preset, which boosts mic gain and relaxes VAD/Whisper thresholds so quiet
+speech doesn't get dropped as silence.
+
+- **Normal speaking voice** → default (no `--whisper-mode` flag)
+- **Quietly or whispered** → enable (`--whisper-mode`)
+- **Not sure** → default
+
+Defaults if the user skips: `small` model, auto-detect language, `<f8>` hotkey,
+normal speaking voice.
 
 ## Step 4 — Launch
 
@@ -115,6 +126,7 @@ Build the arg list:
 - If user picked a specific language, add `--language <code>`
 - Always add `--model <chosen_model>`
 - If user picked a non-default hotkey, add `--hotkey "<chosen_hotkey>"`
+- If user picked the quiet/whispered option, add `--whisper-mode`
 
 Spawn DETACHED so it survives this conversation:
 

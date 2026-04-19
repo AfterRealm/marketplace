@@ -45,3 +45,29 @@ target_window: "claude"
 
 # Log the transcribed text to the voice-mode terminal for review.
 print_transcript: true
+
+# ─── Mic sensitivity (for quiet / whispered speech) ───────────────────────
+
+# Preset bundle for quiet or whispered speech. When true, claude-voice:
+#   - boosts mic_gain to at least 4.0x (if you haven't set it higher)
+#   - raises normalize_target_peak to 0.95
+#   - loosens the silero VAD threshold to 0.15 (still blocks pure silence,
+#     but lets whispers through — prevents hallucinations on accidental hotkey bumps)
+#   - lowers Whisper's no-speech threshold to 0.2 so quiet frames aren't dropped
+#   - disables previous-text conditioning (prevents hallucinated fill-in)
+#   - primes Whisper with "The following contains quiet or whispered speech."
+# Turn on if you tend to speak quietly or whisper when recording.
+whisper_mode: false
+
+# Manual pre-amp multiplier for quiet mics. Applied BEFORE auto-normalize.
+# Valid range: 0.1 - 20.0. 1.0 = off. Try 2.0-3.0 for a quiet built-in laptop mic.
+mic_gain: 1.0
+
+# Automatically peak-normalize recordings toward normalize_target_peak.
+# Boosts quiet audio AND rolls back anything that mic_gain pushed past 1.0
+# (so hot gain on a merely-quiet source doesn't hard-clip). Safe default: on.
+auto_normalize: true
+
+# Target peak (0.0 - 1.0) after normalization. 0.8 leaves a safety margin.
+# whisper_mode overrides this to 0.95 unless you've set it higher explicitly.
+normalize_target_peak: 0.8

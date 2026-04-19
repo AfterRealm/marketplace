@@ -36,6 +36,8 @@ Python is a programming language this tool is written in. Your computer needs it
 
 Check it works: open a terminal and run `python --version`. You should see something like `Python 3.12.x`.
 
+> **macOS / Linux note:** if `python --version` errors with "command not found" but `python3 --version` works, alias or symlink `python` → `python3`. The update-checker hook invokes `python` directly; without that alias, you won't get notifications when new versions ship. One-time fix: `sudo ln -s $(which python3) /usr/local/bin/python` (macOS/Linux), or add `alias python=python3` to your shell profile.
+
 ### 2. Claude Code CLI
 
 This is Claude's command-line tool. It's the piece that handles plugin installs. You'd need it even if you only use the Claude Desktop App.
@@ -100,10 +102,11 @@ Nothing else to install yet. The Whisper voice model and Python packages downloa
 
 1. Open the Claude Desktop App.
 2. In the chat box, type `/voice` and press Enter — or just say something like *"start voice mode in French"*.
-3. Claude will ask you **three quick questions**:
+3. Claude will ask you **four quick questions**:
    - **What language will you be speaking?** (pick yours, or "auto-detect")
    - **Which model size?** Stick with the recommended **small** for your first try. It's a good balance of accuracy and download size (~500 MB).
    - **Which key starts recording?** Stick with the recommended **F8** unless you have a reason to change it — it's a single key that rarely conflicts with anything else.
+   - **How do you usually speak when recording?** Pick **"Quietly or whispered"** if you tend to be soft-spoken — it turns on a preset that boosts the mic and relaxes silence-detection so your speech doesn't get dropped. Otherwise stick with **"Normal speaking voice"**.
 4. Claude will then spend a minute or two setting things up:
    - First time only: it downloads Python dependencies (~200 MB).
    - First time with each model: it downloads the Whisper voice model (~500 MB for "small").
@@ -210,7 +213,7 @@ sudo dnf install xdotool   # Fedora
 - No telemetry. No analytics. No accounts.
 - The only network call is a one-time download of the Whisper model from Hugging Face (a public model host).
 
-Curious? The whole voice pipeline is a single Python file, [`scripts/claude_voice.py`](scripts/claude_voice.py), about 350 lines. You can read every line.
+Curious? The whole voice pipeline is a single Python file, [`scripts/claude_voice.py`](scripts/claude_voice.py). You can read every line.
 
 ---
 
@@ -277,10 +280,12 @@ multilingual-first positioning; works across the **Claude Desktop App, Claude Co
 
 claude-voice is a thin wrapper around excellent open-source work:
 
-- **[Whisper](https://github.com/openai/whisper)** (OpenAI) — the speech recognition model that does the real work
-- **[faster-whisper](https://github.com/SYSTRAN/faster-whisper)** — CTranslate2 port of Whisper, dramatically faster on CPU
-- **[pynput](https://github.com/moses-palmer/pynput)** — global hotkey and clipboard control
-- **[sounddevice](https://python-sounddevice.readthedocs.io/)** + **[soundfile](https://github.com/bastibe/python-soundfile)** — audio capture and WAV writing
+- **[Whisper](https://github.com/openai/whisper)** (OpenAI) — the speech recognition model that does the real work (MIT)
+- **[faster-whisper](https://github.com/SYSTRAN/faster-whisper)** — CTranslate2 port of Whisper, dramatically faster on CPU (MIT)
+- **[pynput](https://github.com/moses-palmer/pynput)** — global hotkey and clipboard control (LGPL-3.0)
+- **[sounddevice](https://python-sounddevice.readthedocs.io/)** + **[soundfile](https://github.com/bastibe/python-soundfile)** — audio capture and WAV writing (MIT / BSD-3-Clause)
+
+All dependencies ship under permissive licenses compatible with claude-voice's own MIT license.
 
 ## Testers welcome
 
