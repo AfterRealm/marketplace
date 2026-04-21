@@ -154,6 +154,27 @@ Claude will remember. Then voice-chat away.
 
 ---
 
+## Soft-spoken or whispering? Turn on Whisper mode
+
+If you tend to speak quietly, whisper, or have a mic that picks up your voice faintly, turn on **Whisper mode** — a preset bundle tuned for soft speech (not to be confused with *Whisper the model*; they happen to share the name).
+
+When Whisper mode is on, claude-voice:
+
+- **Primes the transcriber** with a hint that the audio contains quiet or whispered speech — reduces hallucinations on near-silent frames.
+- **Lowers the no-speech threshold to 0.2** so quiet frames aren't dropped as silence.
+- **Caps auto-normalize gain at 0.95** to avoid clipping when the signal is boosted.
+
+Two ways to enable it:
+
+- **During `/voice` setup**, pick **"Quietly or whispered"** when asked how you usually speak.
+- **Manually** — edit `config.yaml` in the plugin folder and set `whisper_mode: true`.
+
+If your mic is hardware-quiet (built-in laptop, far-field headset), also bump `mic_gain` to `2.0`–`3.0` in the same config. Whisper mode caps auto-normalize at 0.95 by default, so pre-amp via `mic_gain` is the right lever for quiet sources.
+
+Verified live: whispered A–Z test transcribed cleanly on a soft-spoken Windows mic.
+
+---
+
 ## First-time macOS setup
 
 macOS blocks global hotkeys by default. The first time you run claude-voice on a Mac, the hotkey will do nothing until you grant permission.
