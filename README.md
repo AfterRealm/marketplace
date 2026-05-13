@@ -1,6 +1,6 @@
 # AfterRealm Marketplace
 
-Claude Code plugins by [AfterRealm](https://github.com/AfterRealm).
+Claude Code plugins and Claude-adjacent desktop tools by [AfterRealm](https://github.com/AfterRealm).
 
 ## Install the Marketplace
 
@@ -87,6 +87,22 @@ claude plugin add afterrealm/claude-voice
 **Status:** Windows-tested end-to-end. macOS/Linux code paths implemented; [feedback welcome](https://github.com/AfterRealm/claude-voice/issues).
 
 [Full README](https://github.com/AfterRealm/claude-voice) | v0.1.0
+
+---
+
+## Desktop Apps
+
+Standalone desktop tools that live alongside Claude — not installed via `claude plugin add`. Download installers directly from each project's GitHub Releases page.
+
+### Claude Usage Widget
+
+Tiny always-on-top desktop widget that shows your Claude usage at a glance: **5-hour window**, **weekly window**, **extra-usage spend**, and **prepaid balance**. Auto-refreshes every 60 seconds. Windows and macOS.
+
+**First launch:** signs you into claude.ai in an isolated window (cookies stay local; does not touch your Claude Desktop app or browser). Then collapses to a small floating widget you can drag anywhere.
+
+**Download:** [latest release](https://github.com/AfterRealm/claude-usage-widget/releases/latest) — `.exe` for Windows, `.dmg` for macOS (Intel + Apple Silicon).
+
+[Full README](https://github.com/AfterRealm/claude-usage-widget) | v0.2.0
 
 ## License
 
