@@ -102,7 +102,7 @@ Tiny always-on-top desktop widget that shows your Claude usage at a glance: **5-
 
 **Download:** [latest release](https://github.com/AfterRealm/claude-usage-widget/releases/latest) — `.exe` for Windows, `.dmg` for macOS (Intel + Apple Silicon).
 
-[Full README](https://github.com/AfterRealm/claude-usage-widget) | v0.2.0
+[Full README](https://github.com/AfterRealm/claude-usage-widget) | v0.3.0
 
 ## License
 
