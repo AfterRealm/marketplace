@@ -104,6 +104,18 @@ Tiny always-on-top desktop widget that shows your Claude usage at a glance: **5-
 
 [Full README](https://github.com/AfterRealm/claude-usage-widget) | v0.3.0
 
+---
+
+### Image Center
+
+Standalone desktop image processor — no login, no cloud, no Claude required. Drag images in and run **resize**, **compress**, **convert**, **rotate / flip / blur / sharpen / grayscale / invert / trim / crop**, **adjust brightness/contrast/saturation**, **add text**, **remove background** (local ONNX model), chain operations into reusable **macros**, and export individually or as a zip.
+
+Everything runs locally — your images never leave your machine.
+
+**Download:** [latest release](https://github.com/AfterRealm/image-center/releases/latest) — `.exe` for Windows, `.dmg` for macOS (Intel + Apple Silicon).
+
+[Full README](https://github.com/AfterRealm/image-center) | v1.0.0
+
 ## License
 
 MIT
