@@ -96,6 +96,28 @@ def save_cache(cache: dict) -> None:
         pass  # cache is a pure optimization; never let it break the hook
 
 
+ASKED_KEY = "_asked_sessions"
+ASKED_MAX = 500
+
+
+def was_asked(session_id: str) -> bool:
+    """True if this session id has already been through the naming prompt."""
+    return session_id in load_cache().get(ASKED_KEY, {})
+
+
+def mark_asked(session_id: str) -> None:
+    """Remember that this session id has been asked, keeping only the most
+    recent ASKED_MAX ids so the cache can't grow forever."""
+    import time
+    cache = load_cache()
+    asked = cache.get(ASKED_KEY, {})
+    asked[session_id] = time.time()
+    if len(asked) > ASKED_MAX:
+        asked = dict(sorted(asked.items(), key=lambda kv: kv[1])[-ASKED_MAX:])
+    cache[ASKED_KEY] = asked
+    save_cache(cache)
+
+
 def resolve_project_context(payload: dict):
     """Return (project_dir: Path|None, session_id: str) for the session
     this hook is running in. Prefers the hook payload's own

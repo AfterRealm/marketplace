@@ -37,6 +37,8 @@ from _session_continuity_lib import (  # noqa: E402
     is_attended,
     is_first_run,
     is_sidechain_transcript,
+    mark_asked,
+    was_asked,
     extract_last_exchange,
     load_cache,
     load_config,
@@ -48,7 +50,8 @@ from _session_continuity_lib import (  # noqa: E402
 force_utf8_stdout()
 
 # Only nudge when a session is actually beginning, not mid-task events.
-ACTIONABLE_SOURCES = {"startup", "resume"}
+# /clear starts a new session (new id, new transcript), so it counts.
+ACTIONABLE_SOURCES = {"startup", "resume", "clear"}
 
 # Cap work per hook run to the N most recently touched prior transcripts.
 # Cheap in practice: completed transcripts are cached by (size, mtime)
@@ -127,7 +130,7 @@ def find_prior_sessions(project_dir: Path, current_session_id: str):
     names = []
     for f in files[:MAX_PRIOR_FILES_SCANNED]:
         title = read_title_cached(f, cache)
-        if title:
+        if title and title not in names:  # /clear copies titles forward
             names.append(title)
     most_recent_title = read_title_cached(files[0], cache)
     save_cache(cache)
@@ -240,16 +243,27 @@ def run():
     cwd = Path(payload.get("cwd") or os.getcwd())
     folder_name = cwd.name
 
-    # If this session already has a name (common on --resume), it's
-    # already been through this flow once — don't ask again.
+    # Ask once per session id. A title in the transcript isn't proof the
+    # flow ran: /clear copies the old /rename name into the new session's
+    # transcript as its first record.
+    if session_id and was_asked(session_id):
+        return
+
+    current_title = None
     if session_id and project_dir:
         current_transcript = project_dir / f"{session_id}.jsonl"
         if current_transcript.exists():
             cache = load_cache()
-            if read_title_cached(current_transcript, cache):
-                save_cache(cache)
-                return
+            current_title = read_title_cached(current_transcript, cache)
             save_cache(cache)
+
+    # A resumed session that's already named has been through this before
+    # (or was named by hand), so leave it alone.
+    if source == "resume" and current_title:
+        return
+
+    if session_id:
+        mark_asked(session_id)
 
     local = find_local_checkpoint(cwd)
     prior_count, prior_names, most_recent, most_recent_title = find_prior_sessions(project_dir, session_id)
@@ -282,6 +296,10 @@ def run():
 
     parts = [f"[session-continuity] This project (\"{folder_name}\") has prior session history."]
 
+    if current_title:
+        parts.append(f"This session is currently named '{current_title}' (carried over from before /clear).")
+    keep_label = f"Continue, keep '{current_title}'" if current_title else "Continue, keep current name"
+
     if prior_count:
         seen = f" Recovered names: {', '.join(prior_names)}." if prior_names else " None of them were named."
         parts.append(f"{prior_count} prior transcript(s) found for this project directory.{seen}")
@@ -302,8 +320,8 @@ def run():
         "Before addressing the user's message, call AskUserQuestion with a question "
         "like \"Continuing this project's prior work?\" and options (put the digest, "
         f"if any, in the option's description field): \"Continue → rename to "
-        f"'{suggestion}'\" (Recommended, description: \"{continue_desc}\"), \"Continue, "
-        "keep current name\", \"Starting something new instead\", and \"Turn this off\". "
+        f"'{suggestion}'\" (Recommended, description: \"{continue_desc}\"), \"{keep_label}\", "
+        "\"Starting something new instead\", and \"Turn this off\". "
         f'Based on the answer (or a custom name they type), apply it by running: '
         f'{py_invoke(apply_rename, NAME_PLACEHOLDER)} — don\'t just '
         "tell them to type /rename; if they chose to keep the current name or it's not "
