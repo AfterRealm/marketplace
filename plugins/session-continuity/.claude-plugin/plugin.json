@@ -1,0 +1,13 @@
+{
+  "name": "session-continuity",
+  "version": "2.1.0",
+  "description": "Detects prior session history for any project at startup, using Claude Code's own transcript storage (no setup required), surfaces a \"where you left off\" digest, and renames the session for you — configurable, opt-out anytime, Windows/macOS/Linux.",
+  "author": {
+    "name": "Meredith",
+    "url": "https://github.com/AfterRealm"
+  },
+  "homepage": "https://github.com/AfterRealm/session-continuity",
+  "repository": "https://github.com/AfterRealm/session-continuity",
+  "keywords": ["session", "continuity", "naming", "productivity", "hooks"],
+  "license": "MIT"
+}

@@ -36,6 +36,13 @@
       "homepage": "https://github.com/AfterRealm/level-up"
     },
     {
+      "name": "session-continuity",
+      "description": "Detects prior session history for any project at startup and offers to name or rename the session for you automatically.",
+      "category": "productivity",
+      "source": "./plugins/session-continuity",
+      "homepage": "https://github.com/AfterRealm/session-continuity"
+    },
+    {
       "name": "claude-voice",
       "description": "Multilingual voice input for anywhere you type into Claude — Desktop App, Code Desktop, or regular Code terminal. Hold a hotkey, speak any of 99 Whisper languages, transcript pastes into whatever Claude window has focus. Fills the gap while official voice mode is English-only. Lightweight plugin — no MCP, no TTS. (Windows-tested; macOS/Linux feedback welcome.)",
       "category": "utility",
