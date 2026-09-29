@@ -12,7 +12,7 @@ description: >
 license: MIT
 metadata:
   author: AfterRealm
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # Curb Cut
@@ -191,9 +191,9 @@ jobs:
           CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.html' '*.jsx' '*.tsx' '*.vue' '*.svelte')
           if [ -n "$CHANGED" ]; then
             echo "$CHANGED" | while read file; do
-              # Uses Claude Sonnet for CI (fast, cost-effective)
+              # Uses Claude Sonnet for CI (fast, cost-effective); the alias always resolves to the latest Sonnet
               claude -p "Quick Scan this file for accessibility issues. Output findings only, no auto-fix: $(cat "$file")" \
-                --model claude-sonnet-4-6 >> results.md
+                --model sonnet >> results.md
             done
           fi
       - name: Post Results
