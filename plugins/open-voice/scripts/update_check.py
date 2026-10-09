@@ -66,7 +66,7 @@ def main():
         return
     if version_tuple(latest) > version_tuple(installed):
         print(f"open-voice update available: v{installed} -> v{latest}")
-        print(f'Run: claude plugin update "open-voice@afterrealm-plugins"')
+        print('Run: claude plugin update open-voice')
 
 
 if __name__ == "__main__":
