@@ -4,9 +4,13 @@ Claude Code plugins and Claude-adjacent desktop tools by [AfterRealm](https://gi
 
 ## Install the Marketplace
 
-```bash
-claude marketplace add AfterRealm/marketplace
+In Claude Code:
+
 ```
+/plugin marketplace add AfterRealm/marketplace
+```
+
+Or from a terminal: `claude plugin marketplace add AfterRealm/marketplace`. Then install any plugin below.
 
 ## Available Plugins
 
@@ -14,8 +18,8 @@ claude marketplace add AfterRealm/marketplace
 
 Brutal, funny code reviewer with 8 modes and 6 personalities. Every finding is real, every roast comes with a fix.
 
-```bash
-claude plugin add afterrealm/blunt-cake
+```
+/plugin install blunt-cake@afterrealm
 ```
 
 **Modes:** Standard Roast, Panel Roast (multi-agent), Skill Roast, Eval Mode, Diff Roast, Batter Battle, Roast-a-thon, Roast Challenge
@@ -30,13 +34,13 @@ claude plugin add afterrealm/blunt-cake
 
 Session-aware time management for Claude Code. Tracks session duration, context usage, and helps you work with your schedule instead of against it.
 
-```bash
-claude plugin add afterrealm/father-time
+```
+/plugin install father-time@afterrealm
 ```
 
 **Skills:** Time Menu, Session Timer, Session Health, Peak Hours, Daily Brief, Focus Mode, Pace Check, Context Budget, Activity Patterns
 
-[Full README](https://github.com/AfterRealm/father-time) | v1.8.3
+[Full README](https://github.com/AfterRealm/father-time) | v1.9.0
 
 ---
 
@@ -44,15 +48,15 @@ claude plugin add afterrealm/father-time
 
 WCAG 2.2 Level AA accessibility auditor. Scans HTML, JSX, Vue, and Svelte for violations — explains what's wrong, who's affected, and how to fix it.
 
-```bash
-claude plugin add afterrealm/curb-cut
+```
+/plugin install curb-cut@afterrealm
 ```
 
 **Modes:** Quick Scan, Full Audit, Component Check, Report
 
 **Features:** Auto-fix (prefers semantic HTML over ARIA), per-pillar scoring, CI/CD GitHub Action, WAI-ARIA component pattern checks
 
-[Full README](https://github.com/AfterRealm/curb-cut) | v1.1.0
+[Full README](https://github.com/AfterRealm/curb-cut) | v1.1.1
 
 ---
 
@@ -60,8 +64,8 @@ claude plugin add afterrealm/curb-cut
 
 Agent management for Claude Code. Inspect, promote, merge, and analyze usage of agents across projects and global scope. One picker, plain-chat follow-ups, heavy work delegated to subagents.
 
-```bash
-claude plugin add afterrealm/level-up
+```
+/plugin install level-up@afterrealm
 ```
 
 **Actions:** Inspect, Promote & Adapt, Merge, Stats (with turn counts + weekly budget context), Optimization Audit
@@ -76,8 +80,8 @@ claude plugin add afterrealm/level-up
 
 Multilingual-first voice input for anywhere you type into Claude — **Desktop App, Claude Code Desktop, or regular Claude Code terminals**. Hold a hotkey, speak any of 99 Whisper languages, transcript pastes into whatever Claude window has focus. Lightweight plugin — no MCP, no TTS. Fills the gap while official voice mode is English-only.
 
-```bash
-claude plugin add afterrealm/open-voice
+```
+/plugin install open-voice@afterrealm
 ```
 
 **Flow:** `/voice` → pick language + Whisper model + hotkey → hold F8 → speak → release → transcript pastes into Claude.
@@ -90,21 +94,21 @@ claude plugin add afterrealm/open-voice
 
 ---
 
-## Desktop Apps
+### Session Continuity
 
-Standalone desktop tools that live alongside Claude — not installed via `claude plugin add`. Download installers directly from each project's GitHub Releases page.
+Detects prior session history for any project at startup and offers to name or rename the session for you automatically, so picking work back up starts with the right name.
 
-### Claude Usage Widget
+```
+/plugin install session-continuity@afterrealm
+```
 
-Tiny always-on-top desktop widget that shows your Claude usage at a glance: **5-hour window**, **weekly window**, **extra-usage spend**, and **prepaid balance**. Auto-refreshes every 60 seconds. Windows and macOS.
-
-**First launch:** signs you into claude.ai in an isolated window (cookies stay local; does not touch your Claude Desktop app or browser). Then collapses to a small floating widget you can drag anywhere.
-
-**Download:** [latest release](https://github.com/AfterRealm/claude-usage-widget/releases/latest) — `.exe` for Windows, `.dmg` for macOS (Intel + Apple Silicon).
-
-[Full README](https://github.com/AfterRealm/claude-usage-widget) | v0.3.0
+[Full README](https://github.com/AfterRealm/session-continuity) | v2.1.2
 
 ---
+
+## Desktop Apps
+
+Standalone desktop tools that live alongside Claude — not installed as plugins. Download installers directly from each project's GitHub Releases page.
 
 ### Image Center
 
