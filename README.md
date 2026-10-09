@@ -90,7 +90,7 @@ Multilingual-first voice input for anywhere you type into Claude — **Desktop A
 
 **Status:** Windows-tested end-to-end. macOS/Linux code paths implemented; [feedback welcome](https://github.com/AfterRealm/open-voice/issues).
 
-[Full README](https://github.com/AfterRealm/open-voice) | v0.3.0
+[Full README](https://github.com/AfterRealm/open-voice) | v0.3.1
 
 ---
 

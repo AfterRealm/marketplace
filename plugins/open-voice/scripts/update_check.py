@@ -11,7 +11,7 @@ from pathlib import Path
 
 REPO = "AfterRealm/open-voice"
 GITHUB_API = f"https://api.github.com/repos/{REPO}/releases/latest"
-UA_VERSION = "0.3.0"  # stays in sync with plugin.json version
+UA_VERSION = "0.3.1"  # stays in sync with plugin.json version
 
 
 def get_installed_version():

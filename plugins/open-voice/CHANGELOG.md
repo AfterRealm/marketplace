@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.1 — Update notice fix
+
+- **The update notice now prints a command that works for everyone.** It used to say `claude plugin update "open-voice@afterrealm-plugins"`, which only matched one of the two marketplaces you can install from. It now says `claude plugin update open-voice`.
+
 ## v0.3.0 — Now called Open Voice
 
 - **Renamed from claude-voice to open-voice.** Claude Code reserves plugin names that start with `claude-` for Anthropic's own, so the old name failed marketplace validation. Same plugin, same features.
