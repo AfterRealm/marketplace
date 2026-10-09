@@ -1,5 +1,5 @@
 """
-claude-voice — Update checker.
+open-voice — Update checker.
 Compares installed plugin version against latest GitHub release.
 Runs on SessionStart (via hooks/hooks.json) and notifies the user if newer.
 Fails silently on any error — never blocks or noisies a session.
@@ -9,9 +9,9 @@ import os
 import urllib.request
 from pathlib import Path
 
-REPO = "AfterRealm/claude-voice"
+REPO = "AfterRealm/open-voice"
 GITHUB_API = f"https://api.github.com/repos/{REPO}/releases/latest"
-UA_VERSION = "0.2.0"  # stays in sync with plugin.json version
+UA_VERSION = "0.3.0"  # stays in sync with plugin.json version
 
 
 def get_installed_version():
@@ -34,7 +34,7 @@ def get_latest_version():
         GITHUB_API,
         headers={
             "Accept": "application/vnd.github+json",
-            "User-Agent": f"claude-voice-plugin/{UA_VERSION}",
+            "User-Agent": f"open-voice-plugin/{UA_VERSION}",
         },
     )
     try:
@@ -65,8 +65,8 @@ def main():
     if not latest:
         return
     if version_tuple(latest) > version_tuple(installed):
-        print(f"claude-voice update available: v{installed} -> v{latest}")
-        print(f'Run: claude plugin update "claude-voice@afterrealm-plugins"')
+        print(f"open-voice update available: v{installed} -> v{latest}")
+        print(f'Run: claude plugin update "open-voice@afterrealm-plugins"')
 
 
 if __name__ == "__main__":

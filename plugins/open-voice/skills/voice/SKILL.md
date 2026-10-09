@@ -135,17 +135,17 @@ Use the **venv's** python (created in Step 2), not the system python.
 **Windows:** Use PowerShell `Start-Process` with an **array** argument list so paths with spaces or unicode (OneDrive, accented usernames) don't blow up the quoting:
 
 ```bash
-powershell -NoProfile -Command "Start-Process -FilePath '${CLAUDE_PLUGIN_ROOT}/.venv/Scripts/python.exe' -WorkingDirectory '${CLAUDE_PLUGIN_ROOT}' -ArgumentList @('${CLAUDE_PLUGIN_ROOT}/scripts/claude_voice.py', <each-flag-as-its-own-quoted-element>)"
+powershell -NoProfile -Command "Start-Process -FilePath '${CLAUDE_PLUGIN_ROOT}/.venv/Scripts/python.exe' -WorkingDirectory '${CLAUDE_PLUGIN_ROOT}' -ArgumentList @('${CLAUDE_PLUGIN_ROOT}/scripts/open_voice.py', <each-flag-as-its-own-quoted-element>)"
 ```
 
 Example with `--language fr --model small`:
 ```bash
-powershell -NoProfile -Command "Start-Process -FilePath '${CLAUDE_PLUGIN_ROOT}/.venv/Scripts/python.exe' -WorkingDirectory '${CLAUDE_PLUGIN_ROOT}' -ArgumentList @('${CLAUDE_PLUGIN_ROOT}/scripts/claude_voice.py', '--language', 'fr', '--model', 'small')"
+powershell -NoProfile -Command "Start-Process -FilePath '${CLAUDE_PLUGIN_ROOT}/.venv/Scripts/python.exe' -WorkingDirectory '${CLAUDE_PLUGIN_ROOT}' -ArgumentList @('${CLAUDE_PLUGIN_ROOT}/scripts/open_voice.py', '--language', 'fr', '--model', 'small')"
 ```
 
 **macOS / Linux:**
 ```bash
-nohup "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python" "${CLAUDE_PLUGIN_ROOT}/scripts/claude_voice.py" <flags> > /dev/null 2>&1 &
+nohup "${CLAUDE_PLUGIN_ROOT}/.venv/bin/python" "${CLAUDE_PLUGIN_ROOT}/scripts/open_voice.py" <flags> > /dev/null 2>&1 &
 ```
 
 ## Step 5 — Confirm to the user

@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.0 — Now called Open Voice
+
+- **Renamed from claude-voice to open-voice.** Claude Code reserves plugin names that start with `claude-` for Anthropic's own, so the old name failed marketplace validation. Same plugin, same features.
+- The repo moved to `AfterRealm/open-voice`. GitHub redirects the old URLs.
+- The script is now `scripts/open_voice.py`.
+- **If you installed claude-voice:** run `claude plugin uninstall claude-voice`, then `claude plugin install open-voice@afterrealm` (or `open-voice@afterrealm-plugins` if you added this repo as its own marketplace). Your `config.yaml` carries over if you copy it into the new plugin folder.
+
 ## v0.2.0 — Quiet-speech support
 
 - **`whisper_mode` preset bundle** — one config flag (or `--whisper-mode` CLI flag) tunes the full pipeline for quiet or whispered speech: boosts mic pre-amp to 4.0x, raises normalize target to 0.95, loosens the silero VAD threshold to 0.15 (still blocks silence, lets whispers through), lowers Whisper's `no_speech_threshold` to 0.2, disables `condition_on_previous_text` (stops hallucinated fill-in), and primes the model with a quiet-speech `initial_prompt` (English-only, so non-English sessions aren't biased)

@@ -72,21 +72,21 @@ claude plugin add afterrealm/level-up
 
 ---
 
-### Claude Voice
+### Open Voice
 
 Multilingual-first voice input for anywhere you type into Claude — **Desktop App, Claude Code Desktop, or regular Claude Code terminals**. Hold a hotkey, speak any of 99 Whisper languages, transcript pastes into whatever Claude window has focus. Lightweight plugin — no MCP, no TTS. Fills the gap while official voice mode is English-only.
 
 ```bash
-claude plugin add afterrealm/claude-voice
+claude plugin add afterrealm/open-voice
 ```
 
 **Flow:** `/voice` → pick language + Whisper model + hotkey → hold F8 → speak → release → transcript pastes into Claude.
 
 **Features:** Local `faster-whisper` STT (99 languages), focus safety (only pastes into Claude windows), plugin-local venv install, configurable hotkey + recording cap, first-run macOS/Linux platform warnings.
 
-**Status:** Windows-tested end-to-end. macOS/Linux code paths implemented; [feedback welcome](https://github.com/AfterRealm/claude-voice/issues).
+**Status:** Windows-tested end-to-end. macOS/Linux code paths implemented; [feedback welcome](https://github.com/AfterRealm/open-voice/issues).
 
-[Full README](https://github.com/AfterRealm/claude-voice) | v0.1.0
+[Full README](https://github.com/AfterRealm/open-voice) | v0.3.0
 
 ---
 

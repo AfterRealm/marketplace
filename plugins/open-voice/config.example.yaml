@@ -1,4 +1,4 @@
-# claude-voice configuration
+# open-voice configuration
 # Copy to `config.yaml` in the plugin root and customize. All fields optional.
 
 # Hotkey to hold-to-talk. pynput chord notation — every key in angle brackets.
@@ -48,7 +48,7 @@ print_transcript: true
 
 # ─── Mic sensitivity (for quiet / whispered speech) ───────────────────────
 
-# Preset bundle for quiet or whispered speech. When true, claude-voice:
+# Preset bundle for quiet or whispered speech. When true, open-voice:
 #   - boosts mic_gain to at least 4.0x (if you haven't set it higher)
 #   - raises normalize_target_peak to 0.95
 #   - loosens the silero VAD threshold to 0.15 (still blocks pure silence,

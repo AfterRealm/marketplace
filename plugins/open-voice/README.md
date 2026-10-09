@@ -1,4 +1,4 @@
-# claude-voice
+# open-voice
 
 **Talk to Claude in your own language.**
 
@@ -10,7 +10,7 @@ This plugin fixes that. You press a key, you speak your language, and what you s
 
 No MCP server, no TTS pipeline, no long config — just a Claude plugin + a Python script. Because focus safety matches on any window title containing "claude", it works across all three surfaces out of the box.
 
-> ⚠️ **Platform status:** Fully tested on **Windows**. macOS and Linux code paths are implemented but untested in the wild — if you install on Mac or Linux, please [open an issue](https://github.com/AfterRealm/claude-voice/issues) (good or bad) so we can confirm or fix. See [Testers welcome](#testers-welcome) at the bottom for what would help most.
+> ⚠️ **Platform status:** Fully tested on **Windows**. macOS and Linux code paths are implemented but untested in the wild — if you install on Mac or Linux, please [open an issue](https://github.com/AfterRealm/open-voice/issues) (good or bad) so we can confirm or fix. See [Testers welcome](#testers-welcome) at the bottom for what would help most.
 
 ---
 
@@ -69,7 +69,7 @@ This is a black window where you type commands. Don't be intimidated — you'll 
 Copy the line below **exactly** (including the word `claude` at the start), paste it into the terminal, and press Enter.
 
 ```
-claude plugin marketplace add AfterRealm/claude-voice
+claude plugin marketplace add AfterRealm/open-voice
 ```
 
 You'll see some text scroll by. That's Claude bookmarking where the plugin lives. If you see a message saying "marketplace added" or similar, it worked.
@@ -81,7 +81,7 @@ If you see `'claude' is not recognized` or `command not found`: you haven't inst
 Paste this next line and press Enter:
 
 ```
-claude plugin install claude-voice
+claude plugin install open-voice
 ```
 
 You'll see "installed" or similar when it's done. This is quick — a few seconds.
@@ -158,7 +158,7 @@ Claude will remember. Then voice-chat away.
 
 If you tend to speak quietly, whisper, or have a mic that picks up your voice faintly, turn on **Whisper mode** — a preset bundle tuned for soft speech (not to be confused with *Whisper the model*; they happen to share the name).
 
-When Whisper mode is on, claude-voice:
+When Whisper mode is on, open-voice:
 
 - **Primes the transcriber** with a hint that the audio contains quiet or whispered speech — reduces hallucinations on near-silent frames.
 - **Lowers the no-speech threshold to 0.2** so quiet frames aren't dropped as silence.
@@ -177,7 +177,7 @@ Verified live: whispered A–Z test transcribed cleanly on a soft-spoken Windows
 
 ## First-time macOS setup
 
-macOS blocks global hotkeys by default. The first time you run claude-voice on a Mac, the hotkey will do nothing until you grant permission.
+macOS blocks global hotkeys by default. The first time you run open-voice on a Mac, the hotkey will do nothing until you grant permission.
 
 1. Open **System Settings** → **Privacy & Security**.
 2. Click **Accessibility**.
@@ -189,9 +189,9 @@ Without these permissions, the hotkey won't fire and there's no error message �
 
 ## Linux: X11 vs Wayland
 
-claude-voice uses global-hotkey and window-focus libraries that work great on **X11 (Xorg)** and are unreliable on **Wayland**. If you're on a modern distro (Fedora 40+, Ubuntu 24.04+, GNOME 45+ on most distros, Sway, Hyprland), you may be on Wayland without realizing it.
+open-voice uses global-hotkey and window-focus libraries that work great on **X11 (Xorg)** and are unreliable on **Wayland**. If you're on a modern distro (Fedora 40+, Ubuntu 24.04+, GNOME 45+ on most distros, Sway, Hyprland), you may be on Wayland without realizing it.
 
-Check: `echo $XDG_SESSION_TYPE` — if it says `wayland`, either log out and pick an "X11" or "Xorg" session from your display manager, or use claude-voice from a compositor that exposes the global-shortcut portal (very limited right now). A proper evdev-based backend is on the roadmap for a future release.
+Check: `echo $XDG_SESSION_TYPE` — if it says `wayland`, either log out and pick an "X11" or "Xorg" session from your display manager, or use open-voice from a compositor that exposes the global-shortcut portal (very limited right now). A proper evdev-based backend is on the roadmap for a future release.
 
 Also install `xdotool` (or `wmctrl` + `xprop`) for focus safety to work on Linux:
 ```bash
@@ -234,7 +234,7 @@ sudo dnf install xdotool   # Fedora
 - No telemetry. No analytics. No accounts.
 - The only network call is a one-time download of the Whisper model from Hugging Face (a public model host).
 
-Curious? The whole voice pipeline is a single Python file, [`scripts/claude_voice.py`](scripts/claude_voice.py). You can read every line.
+Curious? The whole voice pipeline is a single Python file, [`scripts/open_voice.py`](scripts/open_voice.py). You can read every line.
 
 ---
 
@@ -244,24 +244,24 @@ If you want to change the language, model, or hotkey later, easiest way is to re
 
 For permanent changes, edit `config.yaml` in the plugin folder. Typical locations:
 
-- **Windows:** `%USERPROFILE%\.claude\plugins\cache\AfterRealm\claude-voice\`
-- **macOS:** `~/.claude/plugins/cache/AfterRealm/claude-voice/`
-- **Linux:** `~/.claude/plugins/cache/AfterRealm/claude-voice/`
+- **Windows:** `%USERPROFILE%\.claude\plugins\cache\AfterRealm\open-voice\`
+- **macOS:** `~/.claude/plugins/cache/AfterRealm/open-voice/`
+- **Linux:** `~/.claude/plugins/cache/AfterRealm/open-voice/`
 
 Copy `config.example.yaml` → `config.yaml` in that folder, edit to taste. See [`config.example.yaml`](config.example.yaml) for every option. Restart the voice script (close the terminal, re-run `/voice`) after editing.
 
 Or skip the plugin entirely and run the script directly from a clone:
 
 ```bash
-git clone https://github.com/AfterRealm/claude-voice.git
-cd claude-voice
+git clone https://github.com/AfterRealm/open-voice.git
+cd open-voice
 python -m venv .venv
 # Windows:
 .venv\Scripts\pip install -r scripts/requirements.txt
-.venv\Scripts\python scripts/claude_voice.py --language fr --model small
+.venv\Scripts\python scripts/open_voice.py --language fr --model small
 # macOS / Linux:
 .venv/bin/pip install -r scripts/requirements.txt
-.venv/bin/python scripts/claude_voice.py --language fr --model small
+.venv/bin/python scripts/open_voice.py --language fr --model small
 ```
 
 Flags: `--language <code>` / `--model <size>` / `--hotkey "<combo>"` / `--max-seconds <n>` / `--no-send` / `--any-window` / `--version`.
@@ -286,7 +286,7 @@ MIT — see [LICENSE](LICENSE). Free to use, modify, redistribute.
 
 ## Related projects
 
-claude-voice isn't the only Claude voice plugin out there. Different tools solve different slices of the problem — if this one isn't the right fit, try:
+open-voice isn't the only Claude voice plugin out there. Different tools solve different slices of the problem — if this one isn't the right fit, try:
 
 - **[VoiceMode (mbailey/voicemode)](https://github.com/mbailey/voicemode)** — full two-way voice conversations (STT + TTS) for Claude Code, MCP-based. The featured option if you want to hear replies spoken back.
 - **[claude-stt (jarrodwatts/claude-stt)](https://github.com/jarrodwatts/claude-stt)** — live streaming dictation for Claude Code. Transcription as you speak, not push-to-talk.
@@ -294,23 +294,23 @@ claude-voice isn't the only Claude voice plugin out there. Different tools solve
 - **[claude-ptt (aaddrick/claude-ptt)](https://github.com/aaddrick/claude-ptt)** — push-to-talk for Claude Code, local or OpenAI API backend.
 - **[Wispr Flow](https://wisprflow.ai/use-cases/claude)** — commercial cross-app dictation SaaS.
 
-**Where claude-voice fits in that lineup:**
+**Where open-voice fits in that lineup:**
 multilingual-first positioning; works across the **Claude Desktop App, Claude Code Desktop, and regular Claude Code terminals** (one plugin, three surfaces); plain Claude plugin format (no MCP); lightweight install (just a venv). If you want 2-way TTS, VoiceMode is the better call. If you want a simple multilingual voice input that drops into *any* Claude window that has focus, stay here.
 
 ## Credits
 
-claude-voice is a thin wrapper around excellent open-source work:
+open-voice is a thin wrapper around excellent open-source work:
 
 - **[Whisper](https://github.com/openai/whisper)** (OpenAI) — the speech recognition model that does the real work (MIT)
 - **[faster-whisper](https://github.com/SYSTRAN/faster-whisper)** — CTranslate2 port of Whisper, dramatically faster on CPU (MIT)
 - **[pynput](https://github.com/moses-palmer/pynput)** — global hotkey and clipboard control (LGPL-3.0)
 - **[sounddevice](https://python-sounddevice.readthedocs.io/)** + **[soundfile](https://github.com/bastibe/python-soundfile)** — audio capture and WAV writing (MIT / BSD-3-Clause)
 
-All dependencies ship under permissive licenses compatible with claude-voice's own MIT license.
+All dependencies ship under permissive licenses compatible with open-voice's own MIT license.
 
 ## Testers welcome
 
-claude-voice was built and verified on **Windows 11**. The macOS and Linux (X11) code paths are written against standard libraries (pynput, sounddevice, osascript, xdotool) that are known to work cross-platform, but **no one has actually run it on those OSes yet**. If you install it on a Mac or a Linux box, a short issue report is genuinely valuable — either outcome.
+open-voice was built and verified on **Windows 11**. The macOS and Linux (X11) code paths are written against standard libraries (pynput, sounddevice, osascript, xdotool) that are known to work cross-platform, but **no one has actually run it on those OSes yet**. If you install it on a Mac or a Linux box, a short issue report is genuinely valuable — either outcome.
 
 What would help most:
 
@@ -321,8 +321,8 @@ What would help most:
 - **Did focus safety behave?** Try pressing the hotkey with a non-Claude window focused — does it refuse to paste?
 - **On macOS only:** did you need to grant Accessibility / Input Monitoring permissions, and did the README section on that actually cover what you had to do?
 
-Open an [issue](https://github.com/AfterRealm/claude-voice/issues) with answers. Negative reports are just as useful as positive ones — if the hotkey didn't fire, or the paste landed wrong, that's the signal that closes the gap.
+Open an [issue](https://github.com/AfterRealm/open-voice/issues) with answers. Negative reports are just as useful as positive ones — if the hotkey didn't fire, or the paste landed wrong, that's the signal that closes the gap.
 
 ## Contributing
 
-Pull requests welcome. See [GitHub issues](https://github.com/AfterRealm/claude-voice/issues) for ideas or to report bugs.
+Pull requests welcome. See [GitHub issues](https://github.com/AfterRealm/open-voice/issues) for ideas or to report bugs.

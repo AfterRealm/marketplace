@@ -6,7 +6,7 @@
           {
             "type": "command",
             "command": "python \"${CLAUDE_PLUGIN_ROOT}/scripts/update_check.py\"",
-            "statusMessage": "Checking for claude-voice updates..."
+            "statusMessage": "Checking for open-voice updates..."
           }
         ]
       }
