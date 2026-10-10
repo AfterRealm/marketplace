@@ -48,6 +48,13 @@
       "category": "utility",
       "source": "./plugins/open-voice",
       "homepage": "https://github.com/AfterRealm/open-voice"
+    },
+    {
+      "name": "ue5-blueprints",
+      "description": "UE5 Blueprint analysis, debugging, and teaching tools. Export Blueprints from a running UE5 editor, detect 25+ anti-patterns, and get beginner-friendly fix instructions.",
+      "category": "development",
+      "source": "./plugins/ue5-blueprints",
+      "homepage": "https://github.com/AfterRealm/ue5-blueprint-skills"
     }
   ]
 }

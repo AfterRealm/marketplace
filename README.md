@@ -106,6 +106,22 @@ Detects prior session history for any project at startup and offers to name or r
 
 ---
 
+### UE5 Blueprint Skills
+
+Blueprint analysis for Unreal Engine 5. Export Blueprints from a running editor, detect 25+ anti-patterns, and get beginner-friendly fix instructions, all from your terminal.
+
+```
+/plugin install ue5-blueprints@afterrealm
+```
+
+**Commands:** `/ue5-blueprints:setup`, `blueprint-export`, `blueprint-check`, `blueprint-audit`, `blueprint-fix`
+
+**Requires:** Python 3 with `upyrc`, Node.js, UE5 Editor with the Python Editor Script Plugin enabled.
+
+[Full README](https://github.com/AfterRealm/ue5-blueprint-skills) | v0.1.2
+
+---
+
 ## Desktop Apps
 
 Standalone desktop tools that live alongside Claude — not installed as plugins. Download installers directly from each project's GitHub Releases page.

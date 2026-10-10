@@ -1,0 +1,11 @@
+{
+  "name": "ue5-blueprints",
+  "version": "0.1.2",
+  "description": "UE5 Blueprint analysis, debugging, and teaching tools. Export Blueprints from a running UE5 editor, detect anti-patterns, and get beginner-friendly fix instructions.",
+  "author": {
+    "name": "Meredith",
+    "url": "https://github.com/AfterRealm"
+  },
+  "keywords": ["unreal", "ue5", "blueprint", "gamedev", "debugging"],
+  "license": "MIT"
+}
