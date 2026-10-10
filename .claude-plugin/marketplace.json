@@ -30,7 +30,7 @@
     },
     {
       "name": "level-up",
-      "description": "Agent management skill for Claude Code. List, inspect, promote, adapt, and create agents across projects and global scope. Paginated menus, subagent architecture, Template & Adapt for intelligent promotion.",
+      "description": "Agent management skill for Claude Code. List, inspect, promote, and merge agents across projects and global scope. Stats show real per-agent token costs from your session history, with optimization audits to trim turns and cache growth.",
       "category": "productivity",
       "source": "./plugins/level-up",
       "homepage": "https://github.com/AfterRealm/level-up"
