@@ -67,7 +67,7 @@ def fetch_weekly_usage():
             "Accept": "application/json",
             "Authorization": f"Bearer {token}",
             "anthropic-beta": "oauth-2025-04-20",
-            "User-Agent": "level-up/1.1.0",
+            "User-Agent": "level-up/1.1.1",
         })
         with urllib.request.urlopen(req, timeout=10) as resp:
             data = json.loads(resp.read().decode("utf-8"))

@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Evaluation cases for Level Up — assertion cases verify skill behavior; trigger queries verify description optimization.",
   "assertion_cases": [
     {

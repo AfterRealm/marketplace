@@ -1,4 +1,4 @@
-# Level Up v1.1.0 — Extended Flows
+# Level Up v1.1.1 — Extended Flows
 
 Load this file only if SKILL.md references it for additional detail. The primary flows are fully described in SKILL.md itself — this file exists for edge cases and the granular merge fallback.
 

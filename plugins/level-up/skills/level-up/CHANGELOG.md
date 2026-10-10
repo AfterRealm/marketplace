@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.1 — 2026-10-10
+
+### Docs
+- **Marketplace install step** — README and promo now include `claude marketplace add AfterRealm/marketplace` before `claude plugin add`, plus a link to the AfterRealm marketplace
+
 ## v1.1.0 — 2026-04-13
 
 ### Added
