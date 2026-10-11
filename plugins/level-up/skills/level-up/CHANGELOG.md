@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.2 — 2026-10-11
+
+### Fixed
+- **Install commands** — README and promo now use the current Claude Code CLI syntax: `claude plugin marketplace add AfterRealm/marketplace` then `claude plugin install level-up@afterrealm`. The old `claude marketplace add` / `claude plugin add` commands no longer work
+
 ## v1.1.1 — 2026-10-10
 
 ### Docs
