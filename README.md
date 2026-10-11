@@ -26,7 +26,7 @@ Brutal, funny code reviewer with 8 modes and 6 personalities. Every finding is r
 
 **Personalities:** Chef, Disappointed Grandma, Passive-Aggressive PR Reviewer, Simon Cowell, Snoop Dogg, Pirate, Custom
 
-[Full README](https://github.com/AfterRealm/blunt-cake) | v2.4.1
+[Full README](https://github.com/AfterRealm/blunt-cake) | v2.4.2
 
 ---
 
@@ -40,7 +40,7 @@ Session-aware time management for Claude Code. Tracks session duration, context 
 
 **Skills:** Time Menu, Session Timer, Session Health, Peak Hours, Daily Brief, Focus Mode, Pace Check, Context Budget, Activity Patterns
 
-[Full README](https://github.com/AfterRealm/father-time) | v1.9.0
+[Full README](https://github.com/AfterRealm/father-time) | v1.9.1
 
 ---
 
