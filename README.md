@@ -26,7 +26,7 @@ Brutal, funny code reviewer with 8 modes and 6 personalities. Every finding is r
 
 **Personalities:** Chef, Disappointed Grandma, Passive-Aggressive PR Reviewer, Simon Cowell, Snoop Dogg, Pirate, Custom
 
-[Full README](https://github.com/AfterRealm/blunt-cake) | v2.4.0
+[Full README](https://github.com/AfterRealm/blunt-cake) | v2.4.1
 
 ---
 
@@ -72,7 +72,7 @@ Agent management for Claude Code. Inspect, promote, merge, and analyze usage of 
 
 **Features:** Real subagent token counting via timestamp matching, work-vs-cache breakdown, unused agent detection, AI-generated optimization suggestions
 
-[Full README](https://github.com/AfterRealm/level-up) | v1.1.0
+[Full README](https://github.com/AfterRealm/level-up) | v1.1.1
 
 ---
 
