@@ -72,7 +72,7 @@ Agent management for Claude Code. Inspect, promote, merge, and analyze usage of 
 
 **Features:** Real subagent token counting via timestamp matching, work-vs-cache breakdown, unused agent detection, AI-generated optimization suggestions
 
-[Full README](https://github.com/AfterRealm/level-up) | v1.1.1
+[Full README](https://github.com/AfterRealm/level-up) | v1.1.2
 
 ---
 

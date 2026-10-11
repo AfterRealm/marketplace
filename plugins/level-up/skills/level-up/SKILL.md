@@ -13,7 +13,7 @@ license: MIT
 compatibility: Requires Python 3.x for scanner scripts
 metadata:
   author: AfterRealm
-  version: "1.1.1"
+  version: "1.1.2"
 ---
 
 # Level Up — Agent Management Skill
